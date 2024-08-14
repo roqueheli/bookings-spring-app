@@ -12,4 +12,5 @@ public interface IPlacesService {
     void update(Places place);
     void delete(Integer id) throws ResourceNotFoundException;
     List<Places> findAll();
+    List<Places> getRandomProducts();
 }

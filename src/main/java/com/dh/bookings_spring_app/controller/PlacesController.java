@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dh.bookings_spring_app.entities.Places;
@@ -35,8 +34,8 @@ public class PlacesController {
         return ResponseEntity.ok(iPlacesService.save(place));
     }
 
-    @GetMapping("/id")
-    public ResponseEntity<Optional<Places>> findById(@RequestParam Integer id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Places>> findById(@PathVariable Integer id) {
         return ResponseEntity.ok(iPlacesService.findById(id));
     }
 
@@ -51,7 +50,7 @@ public class PlacesController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Integer id) throws ResourceNotFoundException {
+    public ResponseEntity<String> delete(@PathVariable Integer id) throws ResourceNotFoundException {
         iPlacesService.delete(id);
         return ResponseEntity.ok("Place deleted");
     }
@@ -61,4 +60,8 @@ public class PlacesController {
         return ResponseEntity.ok(iPlacesService.findAll());
     }
 
+    @GetMapping("/random")
+    public ResponseEntity<List<Places>> getRandomProducts() {
+        return ResponseEntity.ok(iPlacesService.getRandomProducts());
+    }
 }
