@@ -115,6 +115,7 @@ public class PlacesServiceImpl implements IPlacesService {
         savedPlace.setCalification(place.getCalification());
         savedPlace.setCategory(category);
         savedPlace.setAddress(place.getAddress());
+        savedPlace.setLocation(location);
         placesRepository.save(savedPlace);
 
         // Guardar imágenes
@@ -141,18 +142,20 @@ public class PlacesServiceImpl implements IPlacesService {
             placeServiceRepository.save(placeService);
         }
 
-        // Guardar las relaciones con RRSS
+        // Procesar las RRSS
         Set<PlacesRRSS> placeRRSSSet = new HashSet<>();
-        for (PlacesRRSS placeRRSS : place.getPlaceRrss()) {
-            RRSS existingRRSS = rrssRepository.findById(placeRRSS.getRrss().getRrssId())
+        for (PlacesRRSS placeRRSS : place.getPlacesRRSSs()) {
+            RRSS rrss = rrssRepository.findById(placeRRSS.getRrss().getRrssId())
                     .orElseThrow(() -> new ResourceNotFoundException("RRSS not found"));
-            placeRRSS.setPlace(savedPlace);
-            // placeRRSS.setRrssUrl(placeRRSS.getRrssUrl());
-            placeRRSS.setRrss(existingRRSS);
 
+            placeRRSS.setPlace(savedPlace);
+            placeRRSS.setRrss(rrss);
             placeRRSSSet.add(placeRRSS);
         }
+
+        // Guardar las relaciones de RRSS con el lugar
         placeRRSSRepository.saveAll(placeRRSSSet);
+        savedPlace.setPlacesRRSSs(placeRRSSSet);
 
         savedPlace.setImages(images);
         savedPlace.setRooms(rooms);

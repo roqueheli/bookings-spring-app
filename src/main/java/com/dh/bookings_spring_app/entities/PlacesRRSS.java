@@ -1,5 +1,7 @@
 package com.dh.bookings_spring_app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -14,11 +16,12 @@ public class PlacesRRSS {
     private String rrssUrl;
 
     @ManyToOne
-    @JoinColumn(name = "place_id", referencedColumnName = "place_id", nullable = false)
+    @JoinColumn(name = "place_id")
+    @JsonIgnore
     private Places place;
 
     @ManyToOne
-    @JoinColumn(name = "rrss_id", referencedColumnName = "rrss_id", nullable = false)
+    @JoinColumn(name = "rrss_id")
     private RRSS rrss;
 
     public Integer getPlaceRrssId() {

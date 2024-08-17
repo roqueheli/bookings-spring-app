@@ -36,9 +36,6 @@ public class Places {
     @Column(name = "location")
     private String location;
 
-    @Column(name = "price", nullable = false)
-    private float price;
-
     @Column(name = "calification")
     private Float calification;
 
@@ -50,8 +47,8 @@ public class Places {
     @JoinColumn(name = "category_id", nullable = false)
     private Categories category;
 
-    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL)
-    private Set<PlacesRRSS> placeRrss;
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PlacesRRSS> placesRRSSs = new HashSet<>();
 
     @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Images> images = new HashSet<>();
@@ -150,19 +147,11 @@ public class Places {
         this.location = location;
     }
 
-    public float getPrice() {
-        return price;
+    public Set<PlacesRRSS> getPlacesRRSSs() {
+        return placesRRSSs;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public Set<PlacesRRSS> getPlaceRrss() {
-        return placeRrss;
-    }
-
-    public void setPlaceRrss(Set<PlacesRRSS> placeRrss) {
-        this.placeRrss = placeRrss;
+    public void setPlacesRRSSs(Set<PlacesRRSS> placesRRSSs) {
+        this.placesRRSSs = placesRRSSs;
     }
 }

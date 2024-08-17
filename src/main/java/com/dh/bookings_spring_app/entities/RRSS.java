@@ -1,5 +1,6 @@
 package com.dh.bookings_spring_app.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -24,9 +25,9 @@ public class RRSS {
     @Column(name = "rrss_name")
     private String rrssName;
 
-    @OneToMany(mappedBy = "rrss", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "rrss", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Set<PlacesRRSS> placeRrss;
+    private Set<PlacesRRSS> placesRRSSs = new HashSet<>();
 
     public Integer getRrssId() {
         return rrssId;
@@ -44,11 +45,11 @@ public class RRSS {
         this.rrssName = rrssName;
     }
 
-    public Set<PlacesRRSS> getPlaceRrss() {
-        return placeRrss;
+    public Set<PlacesRRSS> getPlacesRRSSs() {
+        return placesRRSSs;
     }
 
-    public void setPlaceRrss(Set<PlacesRRSS> placeRrss) {
-        this.placeRrss = placeRrss;
+    public void setPlacesRRSSs(Set<PlacesRRSS> placesRRSSs) {
+        this.placesRRSSs = placesRRSSs;
     }
 }
