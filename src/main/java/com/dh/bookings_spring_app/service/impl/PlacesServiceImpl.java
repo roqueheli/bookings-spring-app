@@ -22,6 +22,8 @@ import com.dh.bookings_spring_app.repository.RoomsRepository;
 import com.dh.bookings_spring_app.repository.ServicesRepository;
 import com.dh.bookings_spring_app.service.IPlacesService;
 
+import jakarta.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +54,8 @@ public class PlacesServiceImpl implements IPlacesService {
     private RRSSRepository rrssRepository;
     @Autowired
     private PlaceRRSSRepository placeRRSSRepository;
+    @Autowired
+    private EntityManager entityManager;
 
     public PlacesServiceImpl(AddressesRepository addressesRepository, ImagesRepository imagesRepository,
             PlaceServiceRepository placeServiceRepository, RoomsRepository roomsRepository,
@@ -164,13 +168,89 @@ public class PlacesServiceImpl implements IPlacesService {
     }
 
     @Override
-    public Optional<Places> findById(Integer id) {
-        return placesRepository.findById(id);
+    public void update(Places updatedPlace) {
+        // Buscar el lugar existente
+        Places existingPlace = placesRepository.findById(updatedPlace.getPlace_id())
+                .orElseThrow(() -> new ResourceNotFoundException("Place not found"));
+
+        Addresses address = updatedPlace.getAddress();
+        try {
+            address = addressesRepository.findById(address.getAddress_id())
+                    .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+        addressesRepository.save(updatedPlace.getAddress());
+        existingPlace.setAddress(updatedPlace.getAddress());
+
+        // Geocodificar la dirección para obtener la ubicación
+        String addressLocation = updatedPlace.getAddress().getStreet() + " " + updatedPlace.getAddress().getStreetNum() + ", "
+                + updatedPlace.getAddress().getCity() + ", "
+                + updatedPlace.getAddress().getZip();
+        String location = geocodingService.getLocationFromAddress(addressLocation);
+
+        // Asignar la ubicación obtenida al place
+        existingPlace.setLocation(location);
+
+        // Validar y asociar categoría
+        Categories category = updatedPlace.getCategory();
+        if (category == null || category.getCategory_id() == null) {
+            throw new ResourceNotFoundException("Category is required");
+        }
+
+        category = categoryRepository.findById(category.getCategory_id())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+        existingPlace.setCategory(category);
+
+        existingPlace.setName(updatedPlace.getName());
+        existingPlace.setPhone(updatedPlace.getPhone());
+        existingPlace.setEmail(updatedPlace.getEmail());
+        existingPlace.setCalification(updatedPlace.getCalification());
+        existingPlace.setCategory(category);
+        placesRepository.save(existingPlace);
+
+        // Guardar imágenes
+        Set<Images> images = updatedPlace.getImages();
+        imagesRepository.deleteAll(existingPlace.getImages()); // Eliminar imágenes actuales
+        for (Images image : images) {
+            image.setPlace(existingPlace);
+        }
+        imagesRepository.saveAll(images);
+
+        Set<Rooms> rooms = updatedPlace.getRooms();
+        roomsRepository.deleteAll(existingPlace.getRooms());
+        for (Rooms room : rooms) {
+            room.setPlace(existingPlace);
+        }
+        roomsRepository.saveAll(rooms);
+
+        // Guardar las relaciones con Service
+        Set<PlaceService> placeServices = updatedPlace.getPlaceServices();
+        placeServiceRepository.deleteAll(existingPlace.getPlaceServices());
+        for (PlaceService placeService : placeServices) {
+            Services existingService = servicesRepository.findById(placeService.getService().getService_id())
+                    .orElseThrow(() -> new RuntimeException("Service not found"));
+            placeService.setPlace(existingPlace);
+            placeService.setService(existingService); // Asegurarse de que el servicio existe
+            placeServiceRepository.save(placeService);
+        }
+
+        // Procesar las RRSS
+        Set<PlacesRRSS> placeRRSSSet = updatedPlace.getPlacesRRSSs();
+        placeRRSSRepository.deleteAll(existingPlace.getPlacesRRSSs());
+        for (PlacesRRSS placeRRSS : placeRRSSSet) {
+            RRSS existingRrss = rrssRepository.findById(placeRRSS.getRrss().getRrssId())
+                    .orElseThrow(() -> new ResourceNotFoundException("RRSS not found"));
+            placeRRSS.setPlace(existingPlace);
+            placeRRSS.setRrss(existingRrss);
+            placeRRSSRepository.save(placeRRSS);
+        }
     }
 
     @Override
-    public void update(Places place) {
-        placesRepository.save(place);
+    public Optional<Places> findById(Integer id) {
+        return placesRepository.findById(id);
     }
 
     @Override
@@ -194,5 +274,93 @@ public class PlacesServiceImpl implements IPlacesService {
     @Override
     public List<Places> getRandomProducts() {
         return placesRepository.findRandomProducts();
+    }
+
+    public GeocodingService getGeocodingService() {
+        return geocodingService;
+    }
+
+    public void setGeocodingService(GeocodingService geocodingService) {
+        this.geocodingService = geocodingService;
+    }
+
+    public PlacesRepository getPlacesRepository() {
+        return placesRepository;
+    }
+
+    public void setPlacesRepository(PlacesRepository placesRepository) {
+        this.placesRepository = placesRepository;
+    }
+
+    public AddressesRepository getAddressesRepository() {
+        return addressesRepository;
+    }
+
+    public void setAddressesRepository(AddressesRepository addressesRepository) {
+        this.addressesRepository = addressesRepository;
+    }
+
+    public ImagesRepository getImagesRepository() {
+        return imagesRepository;
+    }
+
+    public void setImagesRepository(ImagesRepository imagesRepository) {
+        this.imagesRepository = imagesRepository;
+    }
+
+    public PlaceServiceRepository getPlaceServiceRepository() {
+        return placeServiceRepository;
+    }
+
+    public void setPlaceServiceRepository(PlaceServiceRepository placeServiceRepository) {
+        this.placeServiceRepository = placeServiceRepository;
+    }
+
+    public CategoriesRepository getCategoryRepository() {
+        return categoryRepository;
+    }
+
+    public void setCategoryRepository(CategoriesRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
+
+    public RoomsRepository getRoomsRepository() {
+        return roomsRepository;
+    }
+
+    public void setRoomsRepository(RoomsRepository roomsRepository) {
+        this.roomsRepository = roomsRepository;
+    }
+
+    public ServicesRepository getServicesRepository() {
+        return servicesRepository;
+    }
+
+    public void setServicesRepository(ServicesRepository servicesRepository) {
+        this.servicesRepository = servicesRepository;
+    }
+
+    public RRSSRepository getRrssRepository() {
+        return rrssRepository;
+    }
+
+    public void setRrssRepository(RRSSRepository rrssRepository) {
+        this.rrssRepository = rrssRepository;
+    }
+
+    public PlaceRRSSRepository getPlaceRRSSRepository() {
+        return placeRRSSRepository;
+    }
+
+    public void setPlaceRRSSRepository(PlaceRRSSRepository placeRRSSRepository) {
+        this.placeRRSSRepository = placeRRSSRepository;
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 }

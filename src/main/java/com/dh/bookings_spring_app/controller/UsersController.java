@@ -30,7 +30,7 @@ public class UsersController {
         this.iUsersService = iUsersService;
     }
 
-        @PostMapping("/save")
+    @PostMapping("/save")
     public ResponseEntity<Users> save(@RequestBody Users user) {
         return ResponseEntity.ok(iUsersService.save(user));
     }
@@ -61,4 +61,8 @@ public class UsersController {
         return ResponseEntity.ok(iUsersService.findAll());
     }
 
+    @GetMapping("/byowner/{id}")
+    public ResponseEntity<List<Users>> findByOwner(@PathVariable("id") Integer id) throws ResourceNotFoundException {
+        return ResponseEntity.ok(iUsersService.findByOwner(id));
+    }
 }
