@@ -15,4 +15,7 @@ public interface PlacesRepository extends JpaRepository<Places, Integer> {
 
     @Query(value = "SELECT * FROM places ORDER BY RAND() LIMIT 10", nativeQuery = true)
     List<Places> findRandomProducts();
+
+    @Query(value = "SELECT * FROM places WHERE user_id = :id ORDER BY name", nativeQuery = true)
+    Optional<List<Places>> findPlacesByOwner(Integer id);
 }

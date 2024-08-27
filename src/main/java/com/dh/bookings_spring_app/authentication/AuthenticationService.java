@@ -1,9 +1,9 @@
 package com.dh.bookings_spring_app.authentication;
 
-import com.dh.bookings_spring_app.configuration.CustomUserDetailsService;
 import com.dh.bookings_spring_app.configuration.JwtService;
 import com.dh.bookings_spring_app.entities.Users;
 import com.dh.bookings_spring_app.repository.UsersRepository;
+import com.dh.bookings_spring_app.service.CustomUserDetailsService;
 import com.dh.bookings_spring_app.service.IUsersService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +23,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final IUsersService iUsersService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = Users.builder()
@@ -51,13 +52,23 @@ public class AuthenticationService {
         return AuthenticationResponse.builder().token(jwtService.generateToken(user)).build();
     }
 
+    public AuthenticationResponse admin(AuthenticationRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+
+        var user = usersRepository.findByAdmin(request.getEmail()).orElseThrow();
+        System.out.println(user);
+
+        return AuthenticationResponse.builder().token(jwtService.generateToken(user)).build();
+    }
+
     public AuthenticationResponse refresh(String refreshToken) {
         String userEmail = jwtService.extractUsername(refreshToken);
 
         // Usar la instancia inyectada para cargar el usuario
         UserDetails userDetails;
         try {
-            userDetails = CustomUserDetailsService.loadUserByUsername(userEmail);
+            userDetails = customUserDetailsService.loadUserByUsername(userEmail);
         } catch (UsernameNotFoundException e) {
             throw new RuntimeException("Usuario no encontrado", e);
         }

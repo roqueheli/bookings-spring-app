@@ -24,7 +24,7 @@ public class UsersServiceImpl implements IUsersService {
     @Override
     public Users save(Users user) {
         if (usersRepository.findByEmail(user.getEmail().trim()).isPresent()) {
-            throw new ResourceNotFoundException("Place already exists");
+            throw new ResourceNotFoundException("User already exists");
         }
 
         Addresses address = user.getAddress();

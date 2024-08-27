@@ -64,4 +64,9 @@ public class PlacesController {
     public ResponseEntity<List<Places>> getRandomProducts() {
         return ResponseEntity.ok(iPlacesService.getRandomProducts());
     }
+
+    @GetMapping("/byowner/{id}")
+    public ResponseEntity<Optional<List<Places>>> byowner(@PathVariable Integer id) throws ResourceNotFoundException {
+        return ResponseEntity.ok(iPlacesService.findPlacesByOwner(id));
+    }
 }

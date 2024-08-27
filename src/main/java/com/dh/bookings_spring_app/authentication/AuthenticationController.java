@@ -23,6 +23,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.login(request));
     }
 
+    @PostMapping("/admin-login")
+    public ResponseEntity<AuthenticationResponse> admin(@RequestBody AuthenticationRequest request) {
+        return ResponseEntity.ok(authenticationService.admin(request));
+    }
+
     @PostMapping("/refresh-token")
     public ResponseEntity<AuthenticationResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
         return ResponseEntity.ok(authenticationService.refresh(request.getRefreshToken()));

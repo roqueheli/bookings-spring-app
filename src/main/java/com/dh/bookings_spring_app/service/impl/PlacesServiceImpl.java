@@ -271,6 +271,10 @@ public class PlacesServiceImpl implements IPlacesService {
         return placesRepository.findPlacesByName(name);
     }
 
+    public Optional<List<Places>> findPlacesByOwner(Integer id) {
+        return placesRepository.findPlacesByOwner(id);
+    }
+
     @Override
     public List<Places> getRandomProducts() {
         return placesRepository.findRandomProducts();
