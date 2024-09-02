@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dh.bookings_spring_app.entities.Users;
@@ -35,8 +34,8 @@ public class UsersController {
         return ResponseEntity.ok(iUsersService.save(user));
     }
 
-    @GetMapping("/id")
-    public ResponseEntity<Optional<Users>> findById(@RequestParam Integer id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Users>> findById(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         return ResponseEntity.ok(iUsersService.findById(id));
     }
 

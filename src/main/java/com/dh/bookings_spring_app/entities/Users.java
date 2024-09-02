@@ -9,10 +9,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -64,9 +66,8 @@ public class Users implements UserDetails {
     @JoinColumn(name = "address_id")
     private Addresses address;
 
-    @OneToMany
-    @JoinColumn(name = "user_id", nullable = true)
-    private Set<Places> places = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<UserPlaces> userPlaces;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")  // Columna para el Owner en la tabla users
@@ -134,14 +135,6 @@ public class Users implements UserDetails {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
-    }
-
-    public Set<Places> getPlaces() {
-        return places;
-    }
-
-    public void setPlaces(Set<Places> places) {
-        this.places = places;
     }
 
     public Users getOwner() {

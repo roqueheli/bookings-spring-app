@@ -28,7 +28,7 @@ public class GeocodingService {
             GoogleGeocodeResponse.Result result = response.getResults()[0];
             return result.getGeometry().getLocation().getLat() + ", " + result.getGeometry().getLocation().getLng();
         } else {
-            throw new RuntimeException("No se encontraron resultados para la ubicación proporcionada.");
+            return null;
         }
     }
 }

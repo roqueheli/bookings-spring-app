@@ -35,7 +35,7 @@ public class RRSSController {
         return ResponseEntity.ok(irrssService.save(rrss));
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<RRSS>> findById(@RequestParam Integer id) {
         return ResponseEntity.ok(irrssService.findById(id));
     }

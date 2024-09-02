@@ -35,7 +35,7 @@ public class CategoriesController {
         return ResponseEntity.ok(iCategoriesService.save(category));
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<Categories>> findById(@RequestParam Integer id) {
         return ResponseEntity.ok(iCategoriesService.findById(id));
     }

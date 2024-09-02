@@ -3,7 +3,7 @@ package com.dh.bookings_spring_app.authentication;
 import java.util.Set;
 
 import com.dh.bookings_spring_app.entities.Addresses;
-import com.dh.bookings_spring_app.entities.Places;
+import com.dh.bookings_spring_app.entities.UserPlaces;
 import com.dh.bookings_spring_app.entities.UserType;
 import com.dh.bookings_spring_app.entities.Users;
 
@@ -24,6 +24,6 @@ public class RegisterRequest {
     private String phone;
     private UserType userType;
     private Addresses address;
-    private Set<Places> places;
+    private Set<UserPlaces> userPlaces;
     private Users owner;
 }

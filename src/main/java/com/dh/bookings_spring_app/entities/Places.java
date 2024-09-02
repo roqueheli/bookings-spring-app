@@ -3,6 +3,8 @@ package com.dh.bookings_spring_app.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,6 +41,9 @@ public class Places {
     @Column(name = "calification")
     private Float calification;
 
+    @Column(name = "user_creation_id")
+    private Integer userCreationId;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id", nullable = false)
     private Addresses address;
@@ -46,6 +51,10 @@ public class Places {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Categories category;
+
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<UserPlaces> userplaces = new HashSet<>();
 
     @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PlacesRRSS> placesRRSSs = new HashSet<>();
@@ -153,5 +162,21 @@ public class Places {
 
     public void setPlacesRRSSs(Set<PlacesRRSS> placesRRSSs) {
         this.placesRRSSs = placesRRSSs;
+    }
+
+    public Set<UserPlaces> getUserplaces() {
+        return userplaces;
+    }
+
+    public void setUserplaces(Set<UserPlaces> userplaces) {
+        this.userplaces = userplaces;
+    }
+
+    public Integer getUserCreationId() {
+        return userCreationId;
+    }
+
+    public void setUserCreationId(Integer userCreationId) {
+        this.userCreationId = userCreationId;
     }
 }

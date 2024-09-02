@@ -117,6 +117,7 @@ public class PlacesServiceImpl implements IPlacesService {
         savedPlace.setPhone(place.getPhone());
         savedPlace.setEmail(place.getEmail());
         savedPlace.setCalification(place.getCalification());
+        savedPlace.setUserCreationId(place.getUserCreationId());
         savedPlace.setCategory(category);
         savedPlace.setAddress(place.getAddress());
         savedPlace.setLocation(location);
@@ -207,6 +208,7 @@ public class PlacesServiceImpl implements IPlacesService {
         existingPlace.setPhone(updatedPlace.getPhone());
         existingPlace.setEmail(updatedPlace.getEmail());
         existingPlace.setCalification(updatedPlace.getCalification());
+        existingPlace.setUserCreationId(updatedPlace.getUserCreationId());
         existingPlace.setCategory(category);
         placesRepository.save(existingPlace);
 

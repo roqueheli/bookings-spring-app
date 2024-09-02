@@ -34,7 +34,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .userType(request.getUserType())
                 .address(request.getAddress())
-                .places(request.getPlaces())
+                .userPlaces(request.getUserPlaces())
                 .owner(request.getOwner())
                 .build();
 
