@@ -35,7 +35,7 @@ public class ServicesController {
         return ResponseEntity.ok(iServicesService.save(service));
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<Services>> findById(@RequestParam Integer id) {
         return ResponseEntity.ok(iServicesService.findById(id));
     }

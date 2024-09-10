@@ -16,35 +16,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dh.bookings_spring_app.entities.Categories;
+import com.dh.bookings_spring_app.entities.RRSS;
 import com.dh.bookings_spring_app.exception.ResourceNotFoundException;
-import com.dh.bookings_spring_app.service.ICategoriesService;
+import com.dh.bookings_spring_app.service.IRRSSService;
 
 @RestController
-@RequestMapping("/categories")
-public class CategoriesController {
+@RequestMapping("/rrss")
+public class RRSSController {
     @Autowired 
-    private final ICategoriesService iCategoriesService;
+    private final IRRSSService irrssService;
     
-    public CategoriesController(ICategoriesService iCategoriesService) {
-        this.iCategoriesService = iCategoriesService;
+    public RRSSController(IRRSSService irrssService) {
+        this.irrssService = irrssService;
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Categories> save(@RequestBody Categories category) {
-        return ResponseEntity.ok(iCategoriesService.save(category));
+    public ResponseEntity<RRSS> save(@RequestBody RRSS rrss) {
+        return ResponseEntity.ok(irrssService.save(rrss));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Categories>> findById(@RequestParam Integer id) {
-        return ResponseEntity.ok(iCategoriesService.findById(id));
+    public ResponseEntity<Optional<RRSS>> findById(@RequestParam Integer id) {
+        return ResponseEntity.ok(irrssService.findById(id));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Categories> update(@RequestBody Categories category) {
-        if (iCategoriesService.findById(category.getCategory_id()).isPresent()) {
-            iCategoriesService.update(category);
-            return ResponseEntity.ok(category);
+    public ResponseEntity<RRSS> update(@RequestBody RRSS rrss) {
+        if (irrssService.findById(rrss.getRrssId()).isPresent()) {
+            irrssService.update(rrss);
+            return ResponseEntity.ok(rrss);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -52,13 +52,13 @@ public class CategoriesController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Integer id) throws ResourceNotFoundException {
-        iCategoriesService.delete(id);
+        irrssService.delete(id);
         return ResponseEntity.ok("Category deleted");
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Categories>> findAll() {
-        return ResponseEntity.ok(iCategoriesService.findAll());
+    public ResponseEntity<List<RRSS>> findAll() {
+        return ResponseEntity.ok(irrssService.findAll());
     }
 
 }

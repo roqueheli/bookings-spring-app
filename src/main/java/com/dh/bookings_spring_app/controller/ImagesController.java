@@ -35,7 +35,7 @@ public class ImagesController {
         return ResponseEntity.ok(iImagesService.save(image));
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<Images>> findById(@RequestParam Integer id) {
         return ResponseEntity.ok(iImagesService.findById(id));
     }

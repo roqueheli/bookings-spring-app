@@ -42,6 +42,9 @@ public class Addresses {
     @Column(name = "country")
     private String country;
 
+    @Column(name = "zip")
+    private String zip;
+
     public Integer getAddress_id() {
         return address_id;
     }
@@ -112,5 +115,13 @@ public class Addresses {
 
     public void setStreetNum(String streetNum) {
         this.streetNum = streetNum;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
     }
 }

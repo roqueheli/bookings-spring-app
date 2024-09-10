@@ -25,6 +25,9 @@ public class Rooms {
     @Column(name = "capacity")
     private Integer capacity;
 
+    @Column(name = "price", nullable = false)
+    private Integer price;
+
     @ManyToOne
     @JoinColumn(name = "place_id", nullable = false)
     @JsonIgnore
@@ -60,5 +63,21 @@ public class Rooms {
 
     public void setPlace(Places place) {
         this.place = place;
+    }
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 }

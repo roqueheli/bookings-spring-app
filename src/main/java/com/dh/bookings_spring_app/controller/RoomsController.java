@@ -35,7 +35,7 @@ public class RoomsController {
         return ResponseEntity.ok(iRoomsService.save(rooms));
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<Rooms>> findById(@RequestParam Integer id) {
         return ResponseEntity.ok(iRoomsService.findById(id));
     }
